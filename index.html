@@ -6,207 +6,266 @@
 <title>ՏԵՔՍՏԱՅԻՆ ԽՆԴԻՐՆԵՐԻ ՕԳՆԱԿԱՆ</title>
 <style>
 body {
-    font-family: "Segoe UI", sans-serif;
-    background: #f5f5f5;
-    margin: 0;
-    padding: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #eef2ff;
+  margin: 0;
+  padding: 0;
 }
 header {
-    background: #1e3a8a;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
+  background: #1e3a8a;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
-.container {
-    max-width: 700px;
-    margin: 30px auto;
-    background: white;
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin: 25px;
 }
-select, input, button {
-    font-size: 16px;
-    padding: 10px;
-    margin: 8px 0;
-    width: 100%;
-    border-radius: 10px;
-    border: 1px solid #ccc;
+.section {
+  flex: 1 1 350px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  padding: 20px;
+  min-width: 330px;
+}
+h3 {
+  color: #1e3a8a;
+  border-bottom: 2px solid #93c5fd;
+  padding-bottom: 8px;
+}
+label {
+  display: block;
+  margin-top: 10px;
+}
+input, select, button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  font-size: 15px;
 }
 button {
-    background: #1e3a8a;
-    color: white;
-    border: none;
-    cursor: pointer;
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  margin-top: 10px;
 }
 button:hover {
-    background: #274bb1;
+  background: #274bb1;
 }
 .result {
-    margin-top: 20px;
-    padding: 15px;
-    background: #e0e7ff;
-    border-radius: 10px;
-    font-size: 18px;
+  margin-top: 12px;
+  padding: 10px;
+  background: #e0e7ff;
+  border-radius: 8px;
+  font-size: 16px;
+  min-height: 30px;
 }
 footer {
-    text-align: center;
-    padding: 15px;
-    font-size: 14px;
-    color: #555;
+  background: #1e3a8a;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  margin-top: 30px;
 }
 </style>
 </head>
 <body>
 <header>📘 ՏԵՔՍՏԱՅԻՆ ԽՆԴԻՐՆԵՐԻ ՕԳՆԱԿԱՆ</header>
 
-<div class="container">
-    <label for="section">Ընտրիր բաժինը՝</label>
-    <select id="section" onchange="showSection()">
-        <option value="">-- Ընտրիր թեման --</option>
-        <option value="motion">🚗 Շարժման խնդիրներ</option>
-        <option value="percent">💰 Տոկոսների խնդիրներ</option>
-        <option value="parts">🍰 Մասերի խնդիրներ</option>
-        <option value="basic">➕ Պարզ գործողություններ</option>
+<div class="main">
+
+  <!-- Շարժման խնդիրներ -->
+  <div class="section">
+    <h3>🚗 ՇԱՐԺՄԱՆ ԽՆԴԻՐՆԵՐ</h3>
+
+    <label><b>Պարզ շարժում</b></label>
+    <label>Ճանապարհ (S, կմ):</label>
+    <input type="number" id="S">
+    <label>Ժամանակ (t, ժ):</label>
+    <input type="number" id="t">
+    <label>Արագություն (v, կմ/ժ):</label>
+    <input type="number" id="v">
+    <button onclick="calcSimpleMotion()">Հաշվել</button>
+    <div class="result" id="motionSimple"></div>
+
+    <hr style="margin:15px 0; border-top:2px dashed #93c5fd;">
+
+    <label><b>Հանդիպակաց շարժում</b></label>
+    <label>Միջանկյալ հեռավորություն (S, կմ):</label>
+    <input type="number" id="S2">
+    <label>Արագություն 1 (v₁):</label>
+    <input type="number" id="v1">
+    <label>Արագություն 2 (v₂):</label>
+    <input type="number" id="v2">
+    <button onclick="calcOpposite()">Հաշվել</button>
+    <div class="result" id="motionOpposite"></div>
+
+    <hr style="margin:15px 0; border-top:2px dashed #93c5fd;">
+
+    <label><b>Նույն ուղղությամբ շարժում</b></label>
+    <label>Միջակայք (S, կմ):</label>
+    <input type="number" id="S3">
+    <label>Արագություն արագ մարմնի (v₁):</label>
+    <input type="number" id="v3_1">
+    <label>Արագություն դանդաղ մարմնի (v₂):</label>
+    <input type="number" id="v3_2">
+    <button onclick="calcSameDir()">Հաշվել</button>
+    <div class="result" id="motionSame"></div>
+  </div>
+
+  <!-- Տոկոսների խնդիրներ -->
+  <div class="section">
+    <h3>💰 ՏՈԿՈՍՆԵՐ</h3>
+    <label>Հիմնական թիվը (օր. գումար):</label>
+    <input type="number" id="base">
+    <label>Տոկոսը (%):</label>
+    <input type="number" id="perc">
+    <button onclick="calcPercent()">Հաշվել</button>
+    <div class="result" id="percentResult"></div>
+  </div>
+
+  <!-- Մասերի խնդիրներ -->
+  <div class="section">
+    <h3>🍰 ՄԱՍԵՐ</h3>
+    <label>Ամբողջը:</label>
+    <input type="number" id="whole">
+    <label>Մասերի քանակը:</label>
+    <input type="number" id="partsCount">
+    <label>Քանի մաս է վերցվել:</label>
+    <input type="number" id="takenParts">
+    <button onclick="calcParts()">Հաշվել</button>
+    <div class="result" id="partsResult"></div>
+  </div>
+
+  <!-- Պարզ գործողություններ -->
+  <div class="section">
+    <h3>➕ ՊԱՐԶ ԳՈՐԾՈՂՈՒԹՅՈՒՆՆԵՐ</h3>
+    <label>Առաջին թիվը:</label>
+    <input type="number" id="num1">
+    <label>Գործողություն:</label>
+    <select id="operation">
+      <option value="+">+</option>
+      <option value="-">−</option>
+      <option value="*">×</option>
+      <option value="/">÷</option>
     </select>
+    <label>Երկրորդ թիվը:</label>
+    <input type="number" id="num2">
+    <button onclick="calcBasic()">Հաշվել</button>
+    <div class="result" id="basicResult"></div>
+  </div>
 
-    <!-- Շարժման բաժին -->
-    <div id="motion" class="section" style="display:none;">
-        <h3>Շարժման խնդիրներ</h3>
-        <label>Ճանապարհ (S, կմ):</label>
-        <input type="number" id="s">
-        <label>Ժամանակ (t, ժ):</label>
-        <input type="number" id="t">
-        <label>Արագություն (v, կմ/ժ):</label>
-        <input type="number" id="v">
-        <button onclick="calcMotion()">Հաշվել</button>
-        <div class="result" id="motionResult"></div>
-    </div>
-
-    <!-- Տոկոսների բաժին -->
-    <div id="percent" class="section" style="display:none;">
-        <h3>Տոկոսների խնդիրներ</h3>
-        <label>Հիմնական թիվը (օր. գումարը):</label>
-        <input type="number" id="base">
-        <label>Տոկոսը (%):</label>
-        <input type="number" id="perc">
-        <button onclick="calcPercent()">Հաշվել</button>
-        <div class="result" id="percentResult"></div>
-    </div>
-
-    <!-- Մասերի բաժին -->
-    <div id="parts" class="section" style="display:none;">
-        <h3>Մասերի խնդիրներ</h3>
-        <label>Ամբողջը:</label>
-        <input type="number" id="whole">
-        <label>Մասերի քանակը:</label>
-        <input type="number" id="partsCount">
-        <label>Քանի մաս է վերցվել:</label>
-        <input type="number" id="takenParts">
-        <button onclick="calcParts()">Հաշվել</button>
-        <div class="result" id="partsResult"></div>
-    </div>
-
-    <!-- Պարզ գործողություններ -->
-    <div id="basic" class="section" style="display:none;">
-        <h3>Պարզ գործողություններ</h3>
-        <label>Առաջին թիվը:</label>
-        <input type="number" id="num1">
-        <label>Գործողություն:</label>
-        <select id="operation">
-            <option value="+">+</option>
-            <option value="-">−</option>
-            <option value="*">×</option>
-            <option value="/">÷</option>
-        </select>
-        <label>Երկրորդ թիվը:</label>
-        <input type="number" id="num2">
-        <button onclick="calcBasic()">Հաշվել</button>
-        <div class="result" id="basicResult"></div>
-    </div>
 </div>
 
-<footer>© 2025 ԹԳՀԳ × Մաթեմատիկա – Ուսումնական նախագիծ</footer>
+<footer>© 2025  Ուսումնական նախագիծ ԹԳՀԳ × Մաթեմատիկա —</footer>
 
 <script>
-function showSection() {
-    document.querySelectorAll(".section").forEach(s => s.style.display = "none");
-    const val = document.getElementById("section").value;
-    if (val) document.getElementById(val).style.display = "block";
+// --- Պարզ շարժում ---
+function calcSimpleMotion() {
+  let S = parseFloat(document.getElementById("S").value);
+  let t = parseFloat(document.getElementById("t").value);
+  let v = parseFloat(document.getElementById("v").value);
+  let res = "";
+  if (!isNaN(S) && !isNaN(t) && isNaN(v)) {
+      v = S / t;
+      res = `Արագությունը = ${S} ÷ ${t} = <b>${v.toFixed(2)} կմ/ժ</b>`;
+  } else if (!isNaN(S) && !isNaN(v) && isNaN(t)) {
+      t = S / v;
+      res = `Ժամանակը = ${S} ÷ ${v} = <b>${t.toFixed(2)} ժ</b>`;
+  } else if (!isNaN(v) && !isNaN(t) && isNaN(S)) {
+      S = v * t;
+      res = `Ճանապարհը = ${v} × ${t} = <b>${S.toFixed(2)} կմ</b>`;
+  } else {
+      res = "Մուտքագրիր միայն երկու մեծություն՝ երրորդը կգտնեմ։";
+  }
+  document.getElementById("motionSimple").innerHTML = res;
 }
 
-// Շարժման հաշվարկ
-function calcMotion() {
-    let S = parseFloat(document.getElementById("s").value);
-    let t = parseFloat(document.getElementById("t").value);
-    let v = parseFloat(document.getElementById("v").value);
-    let res = "";
-
-    if (!isNaN(S) && !isNaN(t) && isNaN(v)) {
-        v = S / t;
-        res = `Արագությունը = ${S} ÷ ${t} = <b>${v.toFixed(2)} կմ/ժ</b>`;
-    } else if (!isNaN(S) && !isNaN(v) && isNaN(t)) {
-        t = S / v;
-        res = `Ժամանակը = ${S} ÷ ${v} = <b>${t.toFixed(2)} ժ</b>`;
-    } else if (!isNaN(v) && !isNaN(t) && isNaN(S)) {
-        S = v * t;
-        res = `Ճանապարհը = ${v} × ${t} = <b>${S.toFixed(2)} կմ</b>`;
-    } else {
-        res = "Մուտքագրիր միայն երկու մեծություն՝ երրորդը կգտնեմ։";
-    }
-    document.getElementById("motionResult").innerHTML = res;
+// --- Հանդիպակաց շարժում ---
+function calcOpposite() {
+  let S = parseFloat(document.getElementById("S2").value);
+  let v1 = parseFloat(document.getElementById("v1").value);
+  let v2 = parseFloat(document.getElementById("v2").value);
+  if (!isNaN(S) && !isNaN(v1) && !isNaN(v2)) {
+      let t = S / (v1 + v2);
+      document.getElementById("motionOpposite").innerHTML =
+      `Հանդիպման ժամանակը = ${S} ÷ (${v1}+${v2}) = <b>${t.toFixed(2)} ժ</b>`;
+  } else {
+      document.getElementById("motionOpposite").innerHTML = "Լրացրու բոլոր դաշտերը։";
+  }
 }
 
-// Տոկոսների հաշվարկ
+// --- Նույն ուղղությամբ շարժում ---
+function calcSameDir() {
+  let S = parseFloat(document.getElementById("S3").value);
+  let v1 = parseFloat(document.getElementById("v3_1").value);
+  let v2 = parseFloat(document.getElementById("v3_2").value);
+  if (!isNaN(S) && !isNaN(v1) && !isNaN(v2) && v1 > v2) {
+      let t = S / (v1 - v2);
+      document.getElementById("motionSame").innerHTML =
+      `Հանդիպման ժամանակը = ${S} ÷ (${v1}-${v2}) = <b>${t.toFixed(2)} ժ</b>`;
+  } else {
+      document.getElementById("motionSame").innerHTML = "Ստուգիր մուտքագրումը։";
+  }
+}
+
+// --- Տոկոսներ ---
 function calcPercent() {
-    let base = parseFloat(document.getElementById("base").value);
-    let perc = parseFloat(document.getElementById("perc").value);
-    if (!isNaN(base) && !isNaN(perc)) {
-        let result = (base * perc) / 100;
-        document.getElementById("percentResult").innerHTML = 
-        `${perc}% ${base}-ից = <b>${result.toFixed(2)}</b>`;
-    } else {
-        document.getElementById("percentResult").innerHTML = "Լրացրու երկու դաշտերն էլ։";
-    }
+  let base = parseFloat(document.getElementById("base").value);
+  let perc = parseFloat(document.getElementById("perc").value);
+  if (!isNaN(base) && !isNaN(perc)) {
+      let result = (base * perc) / 100;
+      document.getElementById("percentResult").innerHTML =
+      `${perc}% ${base}-ից = <b>${result.toFixed(2)}</b>`;
+  } else {
+      document.getElementById("percentResult").innerHTML = "Լրացրու երկու դաշտերն էլ։";
+  }
 }
 
-// Մասերի հաշվարկ
+// --- Մասեր ---
 function calcParts() {
-    let whole = parseFloat(document.getElementById("whole").value);
-    let parts = parseFloat(document.getElementById("partsCount").value);
-    let taken = parseFloat(document.getElementById("takenParts").value);
-    if (!isNaN(whole) && !isNaN(parts) && !isNaN(taken)) {
-        let one = whole / parts;
-        let result = one * taken;
-        document.getElementById("partsResult").innerHTML = 
-        `Ամբողջը բաժանվել է ${parts} մասի։ 1 մասը = ${one.toFixed(2)}, ապա ${taken} մաս = <b>${result.toFixed(2)}</b>`;
-    } else {
-        document.getElementById("partsResult").innerHTML = "Լրացրու բոլոր դաշտերը։";
-    }
+  let whole = parseFloat(document.getElementById("whole").value);
+  let parts = parseFloat(document.getElementById("partsCount").value);
+  let taken = parseFloat(document.getElementById("takenParts").value);
+  if (!isNaN(whole) && !isNaN(parts) && !isNaN(taken)) {
+      let one = whole / parts;
+      let result = one * taken;
+      document.getElementById("partsResult").innerHTML =
+      `Ամբողջը բաժանվել է ${parts} մասի։ 1 մասը = ${one.toFixed(2)}, ապա ${taken} մաս = <b>${result.toFixed(2)}</b>`;
+  } else {
+      document.getElementById("partsResult").innerHTML = "Լրացրու բոլոր դաշտերը։";
+  }
 }
 
-// Պարզ գործողություններ
+// --- Պարզ գործողություններ ---
 function calcBasic() {
-    let a = parseFloat(document.getElementById("num1").value);
-    let b = parseFloat(document.getElementById("num2").value);
-    let op = document.getElementById("operation").value;
-    if (!isNaN(a) && !isNaN(b)) {
-        let result;
-        switch(op) {
-            case '+': result = a + b; break;
-            case '-': result = a - b; break;
-            case '*': result = a * b; break;
-            case '/': result = b !== 0 ? a / b : "սխալ (բաժանում 0-ի)"; break;
-        }
-        document.getElementById("basicResult").innerHTML = 
-        `${a} ${op} ${b} = <b>${result}</b>`;
-    } else {
-        document.getElementById("basicResult").innerHTML = "Մուտքագրիր երկու թվերն էլ։";
-    }
+  let a = parseFloat(document.getElementById("num1").value);
+  let b = parseFloat(document.getElementById("num2").value);
+  let op = document.getElementById("operation").value;
+  if (!isNaN(a) && !isNaN(b)) {
+      let result;
+      switch(op) {
+          case '+': result = a + b; break;
+          case '-': result = a - b; break;
+          case '*': result = a * b; break;
+          case '/': result = b !== 0 ? (a / b).toFixed(2) : "սխալ (բաժանում 0-ի)"; break;
+      }
+      document.getElementById("basicResult").innerHTML =
+      `${a} ${op} ${b} = <b>${result}</b>`;
+  } else {
+      document.getElementById("basicResult").innerHTML = "Մուտքագրիր երկու թվերն էլ։";
+  }
 }
 </script>
+
 </body>
 </html>
-
