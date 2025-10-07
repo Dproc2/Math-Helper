@@ -106,17 +106,20 @@ footer {
   margin: 70px 0 20px 0;
   letter-spacing: 0.5px;
 }
+.radio-label {
+  display: inline-block;
+  margin-right: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.hidden {
+  display: none;
+}
 @media(max-width: 650px){
   .dashboard {
     padding: 30px 20px;
     gap: 20px;
   }
-}
-label.radio-label {
-  display: inline-block;
-  margin-right: 15px;
-  font-weight: 500;
-  cursor: pointer;
 }
 </style>
 </head>
@@ -126,7 +129,7 @@ label.radio-label {
 
 <div class="dashboard">
 
-  <!-- Main card -->
+  <!-- Main motion card -->
   <details class="main-card">
     <summary>🚗 Շարժման խնդիրներ</summary>
     <label>Ճանապարհ (S, կմ):</label>
@@ -142,15 +145,39 @@ label.radio-label {
   <!-- Double motion card -->
   <details class="card">
     <summary>🔄 Երկու մարմնի շարժում</summary>
-    <p><b>Ընտրիր տեսակը:</b></p>
+    <p><b>Ընտրիր խնդիրների տեսակը:</b></p>
     <label class="radio-label"><input type="radio" name="motionTypeRadio" value="opposite" checked> Հանդիպակաց շարժում</label>
-    <label class="radio-label"><input type="radio" name="motionTypeRadio" value="same"> Նույն ուղղությամբ շարժում</label>
-    <label>Հեռավորություն (S, կմ):</label>
-    <input id="S2" type="number">
-    <label>Առաջին արագություն (v₁, կմ/ժ):</label>
-    <input id="v1" type="number">
-    <label>Երկրորդ արագություն (v₂, կմ/ժ):</label>
-    <input id="v2" type="number">
+    <label class="radio-label"><input type="radio" name="motionTypeRadio" value="same"> Նույն ուղղությամբ</label>
+    <label class="radio-label"><input type="radio" name="motionTypeRadio" value="delayed"> Երկրորդը ուշ է մեկնարկել</label>
+    <label class="radio-label"><input type="radio" name="motionTypeRadio" value="specificDistance">Հանդիպել որոշված հեռավորության վրա</label>
+    
+    <div id="inputsOppSame">
+      <label>Հեռավորություն (S, կմ):</label>
+      <input id="S2" type="number">
+      <label>Առաջին արագություն (v₁, կմ/ժ):</label>
+      <input id="v1" type="number">
+      <label>Երկրորդ արագություն (v₂, կմ/ժ):</label>
+      <input id="v2" type="number">
+    </div>
+
+    <div id="inputsDelayed" class="hidden">
+      <label>Առաջին արագություն (v₁, կմ/ժ):</label>
+      <input id="v1_delay" type="number">
+      <label>Երկրորդ արագություն (v₂, կմ/ժ):</label>
+      <input id="v2_delay" type="number">
+      <label>Երկրորդի ուշացում (t_delay, ժ):</label>
+      <input id="t_delay" type="number">
+    </div>
+
+    <div id="inputsSpecificDistance" class="hidden">
+      <label>Հեռավորություն մինչև հանդիպման կետը (S_meet, կմ):</label>
+      <input id="S_meet" type="number">
+      <label>Առաջին արագություն (v₁, կմ/ժ):</label>
+      <input id="v1_spec" type="number">
+      <label>Երկրորդ արագություն (v₂, կմ/ժ):</label>
+      <input id="v2_spec" type="number">
+    </div>
+
     <button onclick="calcDoubleMotion()">Հաշվել</button>
     <div class="result" id="motion2Result"></div>
   </details>
@@ -209,20 +236,54 @@ function calcMotion() {
 }
 
 function calcDoubleMotion() {
-  let S=parseFloat(document.getElementById("S2").value);
-  let v1=parseFloat(document.getElementById("v1").value);
-  let v2=parseFloat(document.getElementById("v2").value);
-  let type=document.querySelector('input[name="motionTypeRadio"]:checked').value;
-  if(isNaN(S)||isNaN(v1)||isNaN(v2)){
-    document.getElementById("motion2Result").innerHTML="Լրացրեք բոլոր դաշտերը։";
-    return;
+  let type = document.querySelector('input[name="motionTypeRadio"]:checked').value;
+  let res="";
+  if(type==="opposite" || type==="same"){
+    let S=parseFloat(document.getElementById("S2").value);
+    let v1=parseFloat(document.getElementById("v1").value);
+    let v2=parseFloat(document.getElementById("v2").value);
+    if(isNaN(S)||isNaN(v1)||isNaN(v2)){res="Լրացրեք բոլոր դաշտերը։";}
+    else{
+      let t=(type==="opposite")? S/(v1+v2) : S/Math.abs(v1-v2);
+      res=(type==="opposite")? `Հանդիպման ժամանակը = S/(v₁+v₂) = ${S}/(${v1}+${v2}) = <b>${t.toFixed(2)} ժ</b>`
+        : `Հետապնդման ժամանակը = S/|v₁−v₂| = ${S}/|${v1}-${v2}| = <b>${t.toFixed(2)} ժ</b>`;
+    }
+  } else if(type==="delayed"){
+    let v1=parseFloat(document.getElementById("v1_delay").value);
+    let v2=parseFloat(document.getElementById("v2_delay").value);
+    let t_delay=parseFloat(document.getElementById("t_delay").value);
+    if(isNaN(v1)||isNaN(v2)||isNaN(t_delay)){res="Լրացրեք բոլոր դաշտերը։";}
+    else if(v2<=v1){res="Երկրորդը ավելի արագ պետք է լինի, հակառակ դեպքում հանդիպում չի լինի։";}
+    else{
+      let S1=v1*t_delay;
+      let t_meet=S1/(v2-v1); // կամ ըստ ընդհանուր հեռավորության՝ կարող է լրացվել
+      res=`Առաջինը անցավ ${S1.toFixed(2)} կմ, հանդիպման ժամանակը = ${t_meet.toFixed(2)} ժ`;
+    }
+  } else if(type==="specificDistance"){
+    let S_meet=parseFloat(document.getElementById("S_meet").value);
+    let v1=parseFloat(document.getElementById("v1_spec").value);
+    let v2=parseFloat(document.getElementById("v2_spec").value);
+    if(isNaN(S_meet)||isNaN(v1)||isNaN(v2)){res="Լրացրեք բոլոր դաշտերը։";}
+    else{
+      let t=S_meet/(v1+v2);
+      res=`Հանդիպման կետը ${S_meet} կմ, հանդիպման ժամանակը ≈ ${t.toFixed(2)} ժ`;
+    }
   }
-  let t=(type==="opposite")? S/(v1+v2) : S/Math.abs(v1-v2);
-  let text=(type==="opposite")? 
-    `Հանդիպման ժամանակը = S/(v₁+v₂) = ${S}/(${v1}+${v2}) = <b>${t.toFixed(2)} ժ</b>` :
-    `Հետապնդման ժամանակը = S/|v₁−v₂| = ${S}/|${v1}-${v2}| = <b>${t.toFixed(2)} ժ</b>`;
-  document.getElementById("motion2Result").innerHTML=text;
+  document.getElementById("motion2Result").innerHTML=res;
 }
+
+// Show/hide inputs based on type
+document.querySelectorAll('input[name="motionTypeRadio"]').forEach(radio=>{
+  radio.addEventListener('change',()=>{
+    let type = document.querySelector('input[name="motionTypeRadio"]:checked').value;
+    document.getElementById("inputsOppSame").classList.add("hidden");
+    document.getElementById("inputsDelayed").classList.add("hidden");
+    document.getElementById("inputsSpecificDistance").classList.add("hidden");
+    if(type==="opposite" || type==="same") document.getElementById("inputsOppSame").classList.remove("hidden");
+    else if(type==="delayed") document.getElementById("inputsDelayed").classList.remove("hidden");
+    else if(type==="specificDistance") document.getElementById("inputsSpecificDistance").classList.remove("hidden");
+  });
+});
 
 function calcPercent() {
   let n=parseFloat(document.getElementById("num").value);
